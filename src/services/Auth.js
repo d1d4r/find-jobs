@@ -3,13 +3,28 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   updateProfile,
-  onAuthStateChanged
+  onAuthStateChanged,
+  signOut,
+  signInWithEmailAndPassword
 } from 'firebase/auth'
 
 export default class Auth {
   constructor() {
     this.auth = getAuth(app)
   }
+
+  monitorUserState = () => {
+    onAuthStateChanged(this.auth, (user) => {
+      console.log('🚀 ~ Auth ~ onAuthStateChanged ~ user:', user)
+      if (user) {
+        return true
+      } else {
+        return false
+      }
+    })
+  }
+  
+  
 
   createUser = async (email, password, displayName) => {
     try {
@@ -23,10 +38,18 @@ export default class Auth {
     }
   }
 
-  monitorUserState = () => {
-    onAuthStateChanged(this.auth, (user) => {
-      console.log("🚀 ~ Auth ~ onAuthStateChanged ~ user:", user)
-      return user ? true : false
-    })
+  signIn = async (email, password) => {
+    try {
+      const credential = await signInWithEmailAndPassword(this.auth, email, password)
+      const user = credential.user
+      return user
+    } catch (error) {
+      console.log('🚀', error.message)
+      throw error
+    }
+  }
+
+  logOut = async () => {
+    await signOut(this.auth)
   }
 }
