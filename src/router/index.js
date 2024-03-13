@@ -5,13 +5,18 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-
       component: HomeView,
       children: [
         {
           path: 'jobs',
           name: 'jobs',
           component: () => import('../views/JobsView.vue')
+          //children: []
+        },
+        {
+          path: 'jobs/:id',
+          name: 'id',
+          component: () => import('../views/PostDetailsView.vue')
         },
         {
           path: 'post-job',
