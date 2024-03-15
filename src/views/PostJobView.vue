@@ -150,8 +150,10 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import Post from '@/services/firestore/Post'
+import { useJobs } from '@/services/firestore/useJobs'
 
 const post = new Post()
+const { createPost } = useJobs()
 const isLoading = ref(false)
 
 const formData = reactive({
@@ -170,7 +172,8 @@ const formData = reactive({
 const submitForm = async () => {
   try {
     isLoading.value = true
-    await post.createPost(formData)
+    //await post.createPost(formData)
+    await createPost(formData)
   } catch (error) {
     console.log('🚀 ~ submitForm ~ error:', error)
   } finally {
