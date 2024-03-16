@@ -1,8 +1,9 @@
-import app from '@/config/firebase'
+import { db } from '@/config/firebase'
 import {
   addDoc,
   collection,
   doc,
+  getCountFromServer,
   getDoc,
   getDocs,
   getFirestore,
@@ -13,14 +14,14 @@ import {
 
 class Post {
   constructor() {
-    this.db = getFirestore(app)
+    this.db = db
   }
 
   createPost = async (data) => {
     try {
       const Posts = collection(this.db, 'Posts')
       const dofRef = await addDoc(Posts, data)
-      console.log('🚀 ~ Post ~ dofRef:', dofRef)
+      //console.log('🚀 ~ Post ~ dofRef:', dofRef)
     } catch (error) {
       console.log('🚀 ~ Post ~ error:', error)
     }
@@ -30,6 +31,7 @@ class Post {
     const postCollection = collection(this.db, 'Posts')
     const q = query(postCollection, null)
 
+    let allPosts = []
     onSnapshot(q, (querySnapshot) => {
       const posts = []
       querySnapshot.forEach((doc) => {
@@ -38,7 +40,12 @@ class Post {
           ...doc.data()
         })
       })
+      allPosts.push(posts)
+      console.log('🚀 ~ Post ~ onSnapshot ~ posts:', posts)
     })
+
+    console.log(allPosts)
+    return allPosts
   }
 
   getPostById = async (id) => {
@@ -49,6 +56,12 @@ class Post {
       console.log('No such document!')
       return null
     }
+  }
+
+  CountJobs = async () => {
+    const postRef = collection(this.db, 'Posts')
+    const count = await getCountFromServer(postRef)
+    return count.data().count
   }
 }
 

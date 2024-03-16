@@ -3,7 +3,7 @@
     <div class="flex justify-between p-3">
       <div class="flex items-center px-2 border">brand-log</div>
       <button
-        @click="toggle"
+        @click="toggleOpen"
         class="flex flex-col items-center gap-1 p-2 transition-all border active:bg-black group sm:hidden"
       >
         <div
@@ -23,7 +23,7 @@
     >
       <ul class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex flex-col gap-5 sm:flex-row">
-          <li><RouterLink :to="{ name: 'jobs' }">jobs</RouterLink></li>
+          <li><RouterLink :to="{ name: 'jobs', query: { page: '1' }}">jobs</RouterLink></li>
           <li><RouterLink :to="{ name: 'post-job' }" class="">post a job</RouterLink></li>
         </div>
         <li class="">
@@ -53,8 +53,13 @@
 import { useAuthStore } from '@/stores/useAuthStore'
 import Auth from '@/services/Auth'
 import { ref } from 'vue'
+import { useToggleStore } from '@/stores/useToggleStore'
+import { useToggle } from '@/hook/useToggle'
 
-const isOpen = ref(true)
+const states = useToggleStore()
+const { isOpen, toggleOpen } = useToggle()
+
+//const isOpen = ref(true)
 
 const toggle = () => {
   isOpen.value = !isOpen.value

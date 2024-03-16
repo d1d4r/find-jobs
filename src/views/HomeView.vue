@@ -1,8 +1,9 @@
 <template>
   <NavBar />
+  
   <RouterView />
   <footer class="h-20 p-2 bg-black border">
-    <div class="text-center text-white">
+    <div class="flex items-center justify-center w-full h-full text-white border">
       <p>
         developed by
         <a

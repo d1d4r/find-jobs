@@ -37,11 +37,11 @@
           ></textarea>
         </div>
         <div class="mb-4">
-          <label for="experienceLevel" class="block mb-2 font-bold">location:</label>
+          <label for="location" class="block mb-2 font-bold">location:</label>
           <select
             required
             v-model="formData.location"
-            id="experienceLevel"
+            id="location"
             class="w-full px-3 py-2 leading-tight border border-black rounded appearance-none"
           >
             <option value="" selected disabled hidden>location</option>

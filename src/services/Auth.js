@@ -1,4 +1,4 @@
-import app from '@/config/firebase'
+import {app} from '@/config/firebase'
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -51,5 +51,6 @@ export default class Auth {
 
   logOut = async () => {
     await signOut(this.auth)
+    
   }
 }

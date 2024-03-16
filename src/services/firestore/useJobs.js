@@ -3,9 +3,12 @@ import {
   collection,
   doc,
   getCountFromServer,
+  getDocs,
+  limit,
   onSnapshot,
   orderBy,
   query,
+  startAt,
   where
 } from 'firebase/firestore'
 import { db } from '@/config/firebase'
@@ -21,19 +24,17 @@ export function useJobs() {
     error: null
   })
   const route = useRoute()
+
   const countJobs = async () => {
     const postRef = collection(db, 'Posts')
     const count = await getCountFromServer(postRef)
     postState.count = count.data().count
   }
 
-  const getPosts = async () => {
-    // const state = useFilterJobsStore()
-
-    const jobsCollection = collection(db, 'Posts')
-
+  const applyFilters = () => {
+    const { page, ...filters } = route.query
     const queryConstraints = []
-    for (const [filterName, filterValue] of Object.entries(route.query)) {
+    for (const [filterName, filterValue] of Object.entries(filters)) {
       if (
         filterValue !== 'All-Location' &&
         filterValue !== 'Experience-Level' &&
@@ -42,11 +43,33 @@ export function useJobs() {
         queryConstraints.push(where(filterName, '==', filterValue))
       }
     }
+    return queryConstraints
+  }
+  const applyPagination = async (currentPage, currentPageSize) => {
+    const startAtDoc =
+      currentPage === 1 ? null : await getNthDocBasedOnField(currentPage * currentPageSize - 1)
+    return startAtDoc
+  }
+
+  const getPosts = async (currentPage, currentPageSize) => {
+    postState.loading = true
+
+    if (currentPage < 1 || currentPageSize < 1 || isNaN(currentPage)) {
+      throw new Error('Invalid currentPage or currentPageSize. Both must be positive integers.')
+    }
+
+    const jobsCollection = collection(db, 'Posts')
+
+    const queryConstraints = applyFilters()
+
+    const startAtDoc = await applyPagination(currentPage, currentPageSize)
+
+    const dublicate = [orderBy('applicationDeadline'), startAt(startAtDoc), limit(currentPageSize)]
 
     const q =
       queryConstraints.length === 0
-        ? query(jobsCollection)
-        : query(jobsCollection, ...queryConstraints)
+        ? query(jobsCollection, ...dublicate)
+        : query(jobsCollection, ...queryConstraints, ...dublicate)
 
     onSnapshot(q, (querySnapshot) => {
       const posts = []
@@ -58,6 +81,19 @@ export function useJobs() {
       })
       postState.posts = posts
     })
+    postState.loading = false
+
+    //const { page, ...filters } = route.query
+
+    // for (const [filterName, filterValue] of Object.entries(filters)) {
+    //   if (
+    //     filterValue !== 'All-Location' &&
+    //     filterValue !== 'Experience-Level' &&
+    //     filterValue !== 'Employment-Type'
+    //   ) {
+    //     queryConstraints.push(where(filterName, '==', filterValue))
+    //   }
+    // }
   }
 
   const createPost = async (postData) => {
@@ -75,6 +111,20 @@ export function useJobs() {
 
   const deletePost = async (postId) => {
     //await deleteDoc(doc(db, 'Posts', postId))
+  }
+
+  const getNthDocBasedOnField = async (index) => {
+    const postRef = collection(db, 'Posts')
+    const q = query(postRef, orderBy('applicationDeadline'), limit(index + 1))
+
+    const snapshot = await getDocs(q)
+
+    if (snapshot.size <= index) {
+      return null
+    }
+
+    //console.log('🚀 ~ getNthDocBasedOnField ~ snapshot.docs[index]:', snapshot.docs[index])
+    return snapshot.docs[index]
   }
 
   // onMounted(getPosts)

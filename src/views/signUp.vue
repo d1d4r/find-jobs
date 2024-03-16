@@ -1,5 +1,5 @@
 <template>
-  <div class="border flex justify-center items-center min-h-screen">
+  <div class="flex items-center justify-center min-h-screen border">
     <form @submit.prevent="submitForm">
       <div class="border flex flex-col size-[30rem] p-4 rounded-md gap-4">
         <label for="name" class="flex flex-col gap-2">
@@ -7,7 +7,7 @@
           <input
             id="name"
             type="text"
-            class="rounded-md p-1 border"
+            class="p-1 border rounded-md"
             placeholder="enter name"
             v-model="formData.name"
             required
@@ -20,7 +20,7 @@
           <input
             id="email"
             type="email"
-            class="rounded-md p-1 border"
+            class="p-1 border rounded-md"
             placeholder="email@example.com"
             v-model="formData.email"
             required
@@ -32,7 +32,7 @@
           <input
             id="password"
             type="password"
-            class="rounded-md p-1 border"
+            class="p-1 border rounded-md"
             placeholder="**********"
             v-model="formData.password"
             required
@@ -43,7 +43,7 @@
         <button
           :disabled="formData.loading"
           type="submit"
-          class="border px-4 py-2 bg-black rounded-md text-white hover:bg-gray-800 active:bg-slate-900 disabled:bg-slate-400"
+          class="px-4 py-2 text-white bg-black border rounded-md hover:bg-gray-800 active:bg-slate-900 disabled:bg-slate-400"
         >
           <span v-if="!formData.loading">CREATE ACCOUNTE</span>
           <span v-if="formData.loading">LOADING...</span>
@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import Auth from '@/services/Auth'
 import { useRouter } from 'vue-router'
 
@@ -85,6 +85,19 @@ const resetFormData = () => {
   formData.loading = false
 }
 
+// watch(()=>{
+
+// })
+const validationFields = computed(() => {
+  if (formData.password.length < 6) {
+    return false
+  } else if (!formData.email.includes('@')) {
+    return false
+  } else {
+    return true
+  }
+})
+
 const submitForm = async () => {
   try {
     formData.loading = true
@@ -92,7 +105,6 @@ const submitForm = async () => {
     router.push({ path: '/' })
     //console.log('🚀 ~ submitForm ~ user:', user)
   } catch (error) {
-    
     switch (error.code) {
       case 'auth/weak-password':
         formData.error.weak = 'password must be at least 6 charachter'
