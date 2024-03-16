@@ -10,7 +10,9 @@ const router = createRouter({
         {
           path: 'jobs',
           name: 'jobs',
-          component: () => import('../views/JobsView.vue')
+          component: () => import('../views/JobsView.vue'),
+          props: true,
+        
           //children: []
         },
         {
