@@ -22,27 +22,46 @@
       :class="{ 'hidden sm:block': isOpen }"
     >
       <ul class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <li>
+          <RouterLink :to="{ name: 'profile' }">
+            <div
+              class="relative w-10 h-10 overflow-hidden ring-4 bg-gray-100 rounded-full dark:bg-gray-600"
+            >
+              <svg
+                class="absolute w-12 h-12 text-gray-400 -left-1"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </div>
+          </RouterLink>
+        </li>
         <div class="flex flex-col gap-5 sm:flex-row">
-          <li><RouterLink :to="{ name: 'jobs', query: { page: '1' }}">jobs</RouterLink></li>
+          <li><RouterLink :to="{ name: 'jobs', query: { page: '1' } }">jobs</RouterLink></li>
           <li><RouterLink :to="{ name: 'post-job' }" class="">post a job</RouterLink></li>
         </div>
-        <li class="">
+        <li>
           <button
-            v-if="state.isLoagged"
-            @click="auth.logOut"
+            v-if="state.isAuthenticated"
+            @click="state.logOut"
             class="px-4 py-2 text-white bg-black border rounded-md hover:bg-gray-800 active:bg-slate-900"
           >
             LOG OUT
           </button>
         </li>
-        <li :class="{ hidden: state.isLoagged }">
-          <RouterLink
-            v-if="!state.isLoagged"
-            to="/signup"
+
+        <li :class="{ hidden: state.isAuthenticated }">
+          <button
             class="px-4 py-2 text-white bg-black border rounded-md hover:bg-gray-800 active:bg-slate-900"
           >
-            SIGN UP
-          </RouterLink>
+            <RouterLink v-if="!state.isAuthenticated" to="/signup"> SIGN UP </RouterLink>
+          </button>
         </li>
       </ul>
     </div>
@@ -50,21 +69,11 @@
 </template>
 
 <script setup>
-import { useAuthStore } from '@/stores/useAuthStore'
-import Auth from '@/services/Auth'
-import { ref } from 'vue'
-import { useToggleStore } from '@/stores/useToggleStore'
 import { useToggle } from '@/hook/useToggle'
+import { useAuthStore } from '@/stores/useAuthStore'
 
-const states = useToggleStore()
 const { isOpen, toggleOpen } = useToggle()
 
-//const isOpen = ref(true)
-
-const toggle = () => {
-  isOpen.value = !isOpen.value
-}
-const auth = new Auth()
 const state = useAuthStore()
 </script>
 
