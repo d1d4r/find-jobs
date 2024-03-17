@@ -151,6 +151,7 @@
 import { reactive, ref } from 'vue'
 import Post from '@/services/firestore/Post'
 import { useJobs } from '@/services/firestore/useJobs'
+import { auth } from '@/config/firebase'
 
 const post = new Post()
 const { createPost } = useJobs()
@@ -173,7 +174,7 @@ const submitForm = async () => {
   try {
     isLoading.value = true
     //await post.createPost(formData)
-    await createPost(formData)
+    await createPost(formData, auth.currentUser.uid)
   } catch (error) {
     console.log('🚀 ~ submitForm ~ error:', error)
   } finally {
