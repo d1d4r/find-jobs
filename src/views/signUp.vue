@@ -59,12 +59,13 @@
 </template>
 
 <script setup>
-import { computed, reactive, watch } from 'vue'
-import Auth from '@/services/Auth'
+import { computed, reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/useAuthStore'
 
-const auth = new Auth()
 const router = useRouter()
+
+const { createUser } = useAuthStore()
 
 const formData = reactive({
   name: '',
@@ -101,7 +102,7 @@ const validationFields = computed(() => {
 const submitForm = async () => {
   try {
     formData.loading = true
-    const user = await auth.createUser(formData.email, formData.password, formData.name)
+    await createUser(formData.email, formData.password, formData.name)
     router.push({ path: '/' })
     //console.log('🚀 ~ submitForm ~ user:', user)
   } catch (error) {
