@@ -47,11 +47,12 @@
 
 <script setup>
 import { reactive } from 'vue'
-import Auth from '@/services/Auth'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/useAuthStore'
 
-const auth = new Auth()
 const router = useRouter()
+
+const { signIn } = useAuthStore()
 
 const formData = reactive({
   name: '',
@@ -74,7 +75,7 @@ const resetFormData = () => {
 const submitForm = async () => {
   try {
     formData.loading = true
-    const user = await auth.signIn(formData.email, formData.password)
+    await signIn(formData.email, formData.password)
     router.push({ path: '/' })
     //console.log('🚀 ~ submitForm ~ user:', user)
   } catch (error) {
