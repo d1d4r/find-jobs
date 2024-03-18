@@ -154,6 +154,16 @@ export function useJobs() {
 
     postState.jobById = jobs
   }
+  //sub collections
+  const applications = async (jobId, data) => {
+    try {
+      const applicationDoc = collection(db, `Jobs/${jobId}/Applications`)
+      const application = await addDoc(applicationDoc, data)
+      return application
+    } catch (error) {
+      console.log('🚀 ~ applications ~ error:', error)
+    }
+  }
 
   // onMounted(getPosts)
 
@@ -165,6 +175,7 @@ export function useJobs() {
     updatePost,
     deletePost,
     getPostById,
+    applications,
     getJobsByUserId
   }
 }
