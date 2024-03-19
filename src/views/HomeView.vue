@@ -1,5 +1,5 @@
 <template>
-  <NavBar />
+  <!-- <NavBar /> -->
   
   <RouterView />
   <footer class="h-20 p-2 bg-black border">
