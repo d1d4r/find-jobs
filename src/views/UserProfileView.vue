@@ -4,33 +4,26 @@
     <img
       src="https://static.vecteezy.com/system/resources/previews/003/715/527/non_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-vector.jpg"
       alt="User Avatar"
-      class="rounded-full h-20 w-20 mx-auto mb-4"
+      class="w-20 h-20 mx-auto mb-4 rounded-full"
     />
-    <!-- <div class="mb-4">
-      <label for="email" class="block">Email</label>
-      <p id="email" class="mt-1 text-sm text-gray-900">{{ user?.email }}</p>
-    </div> -->
-    <!-- Display Name -->
+
     <div class="mb-4">
       <label for="displayName" class="block">Display Name</label>
       <input
-        v-model="displayName"
+        v-model="userState.displayName"
         type="text"
         id="displayName"
-        class="border-black border rounded-md p-1"
+        class="p-1 border border-black rounded-md"
       />
     </div>
 
-    <!-- Email -->
-
-    <!-- Bio -->
     <div class="mb-4">
       <label for="bio" class="block">Bio</label>
       <textarea
-        v-model="userState.user.bio"
+        v-model="userState.bio"
         id="bio"
         rows="3"
-        class="border-black border rounded-md w-full p-2"
+        class="w-full p-2 border border-black rounded-md"
       ></textarea>
     </div>
 
@@ -41,44 +34,39 @@
     >
       Save
     </button>
-    <div class="w-full h-1 bg-black rounded-full my-4"></div>
+    <div class="w-full h-1 my-4 bg-black rounded-full"></div>
     <h2 class="text-4xl">posted jobs</h2>
-    <JobCard v-for="post in postState.jobById" :post="post" :key="post.id" />
+    <JobCard v-for="post in postState" :post="post" :key="post.id" />
   </div>
 </template>
 
 <script setup>
-import { useUser } from '@/services/firestore/useUsers'
-import { useJobs } from '@/services/firestore/useJobs'
-import { onMounted, onUpdated } from 'vue'
+import { onMounted } from 'vue'
 import { auth } from '@/config/firebase'
 import { ref } from 'vue'
 import JobCard from '@/components/JobCard.vue'
-
-const { getUserById, userState, updateUser } = useUser()
-const { getJobsByUserId, postState } = useJobs()
+import { getUserById, updateUser } from '@/services/firestore/userService'
+import { getJobsByUserId } from '@/services/firestore/jobService'
 
 const userId = ref(null)
-const displayName = ref('')
-const bio = ref('')
+
+const postState = ref([])
+const userState = ref({})
 
 const saveProfile = () => {
-  updateUser(userId.value, { displayName: displayName.value, bio: bio.value })
+  updateUser(userId.value, { displayName: userState.value.displayName, bio: userState.value.bio })
 }
 
 onMounted(() => {
   auth.onAuthStateChanged(async (user) => {
     if (user) {
       userId.value = user.uid
-      await getUserById(userId.value)
-      await getJobsByUserId(userId.value)
+      const x = await getUserById(userId.value)
+      userState.value = x
+      const y = await getJobsByUserId(userId.value)
+      postState.value = y
     }
   })
-})
-
-onUpdated(() => {
-  displayName.value = userState.user.displayName
-  bio.value = userState.user.bio
 })
 </script>
 

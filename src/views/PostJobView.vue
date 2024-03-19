@@ -140,21 +140,16 @@
           <span v-if="!isLoading">POST</span>
           <span v-if="isLoading">LOADING...</span>
         </button>
-        <button class="px-4 py-2 text-black bg-white border border-black rounded-md" type="submit">
-          CANCEL
-        </button>
+        <button class="px-4 py-2 text-black bg-white border border-black rounded-md">CANCEL</button>
       </div>
     </form>
   </div>
 </template>
 <script setup>
 import { reactive, ref } from 'vue'
-import Post from '@/services/firestore/Post'
-import { useJobs } from '@/services/firestore/useJobs'
 import { auth } from '@/config/firebase'
+import { createPost } from '@/services/firestore/jobService'
 
-const post = new Post()
-const { createPost } = useJobs()
 const isLoading = ref(false)
 
 const formData = reactive({
@@ -173,7 +168,6 @@ const formData = reactive({
 const submitForm = async () => {
   try {
     isLoading.value = true
-    //await post.createPost(formData)
     await createPost(formData, auth.currentUser.uid)
   } catch (error) {
     console.log('🚀 ~ submitForm ~ error:', error)

@@ -1,11 +1,15 @@
 <template>
-  <div class="container px-4 py-8 mx-auto min-h-screen">
-    <div class="my-5 flex justify-between w-1/2">
-      <h1 class="mb-4 text-3xl font-bold">Job Details</h1>
+  <div class="container min-h-screen px-4 py-8 mx-auto">
+    <div>
+      <h2 class="mb-4 text-3xl font-bold">posted by</h2>
+      <p class="p-2 underline border">{{ state.user.displayName }}</p>
+    </div>
+    <div class="flex justify-between w-full my-5 sm:w-1/2">
+      <h2 class="mb-4 text-3xl font-bold">Job Details</h2>
       <button
         :disabled="isLoading"
         @click="applyJob"
-        class="bg-green-600 disabled:bg-green-200 hover:bg-green-500 active:bg-green-800 w-56 text-white p-2 rounded-md"
+        class="w-56 p-2 text-white bg-green-600 rounded-md disabled:bg-green-200 hover:bg-green-500 active:bg-green-800"
       >
         <span v-if="!isLoading">APPLY JOB</span>
         <span v-else>LOADING...</span>
@@ -15,38 +19,34 @@
     <div class="flex flex-wrap gap-4 mb-4">
       <div class="">
         <span class="text-lg font-medium">Job Title: </span>
-        <span class="bg-black w-fit text-white p-2 rounded-full">{{
-          postState.post.jobTitle
-        }}</span>
+        <span class="p-2 text-white bg-black rounded-full w-fit">{{ state.post.jobTitle }}</span>
       </div>
       <div class="">
         <span class="text-lg font-medium">Location: </span>
-        <span class="bg-black w-fit text-white p-2 rounded-full">{{
-          postState.post.location
-        }}</span>
+        <span class="p-2 text-white bg-black rounded-full w-fit">{{ state.post.location }}</span>
       </div>
       <div class="">
         <span class="text-lg font-medium">Employment Type: </span>
-        <span class="bg-black w-fit text-white p-2 rounded-full">{{
-          postState.post.employmentType
+        <span class="p-2 text-white bg-black rounded-full w-fit">{{
+          state.post.employmentType
         }}</span>
       </div>
       <div class="">
         <span class="text-lg font-medium">Experience Level: </span>
-        <span class="bg-black w-fit text-white p-2 rounded-full">{{
-          postState.post.experienceLevel
+        <span class="p-2 text-white bg-black rounded-full w-fit">{{
+          state.post.experienceLevel
         }}</span>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 w-1/2">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
       <div>
         <h2 class="text-xl font-medium">Skills Required</h2>
         <ul class="space-y-1">
           <li
-            v-for="skill in postState.post.skills?.split(',')"
+            v-for="skill in state.post.skills?.split(',')"
             :key="skill"
-            class="bg-black w-fit text-white p-2 rounded-full"
+            class="p-2 text-white bg-black rounded-full w-fit"
           >
             {{ skill }}
           </li>
@@ -56,9 +56,9 @@
         <h2 class="text-xl font-medium">Tags</h2>
         <ul class="space-y-1 list-disc">
           <li
-            v-for="tag in postState.post.tags?.split(',')"
+            v-for="tag in state.post.tags?.split(',')"
             :key="tag"
-            class="bg-black w-fit text-white p-2 rounded-full underline"
+            class="p-2 text-white underline bg-black rounded-full w-fit"
           >
             #{{ tag }}
           </li>
@@ -66,17 +66,17 @@
       </div>
       <div>
         <h2 class="text-xl font-medium">Base Salary</h2>
-        <p class="bg-black w-fit text-white p-2 rounded-full">{{ postState.post.basedSalary }}$</p>
+        <p class="p-2 text-white bg-black rounded-full w-fit">{{ state.post.basedSalary }}$</p>
       </div>
       <div>
         <h2 class="text-xl font-medium">Application Deadline</h2>
-        <p class="bg-red-600 w-fit text-white p-2 rounded-full">
-          {{ postState.post.applicationDeadline }}
+        <p class="p-2 text-white bg-red-600 rounded-full w-fit">
+          {{ state.post.applicationDeadline }}
         </p>
       </div>
       <div class="space-y-2">
         <h2 class="text-xl font-medium">Job Description</h2>
-        <p class="bg-black w-fit text-white p-2 rounded-md">
+        <p class="p-2 text-white bg-black rounded-md w-fit">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat ducimus laborum inventore
           quas eos esse aliquam, officia fugiat quaerat veritatis minima sunt? Vel nihil nesciunt
           consequuntur maiores fuga quos ea, tenetur doloribus perspiciatis nulla? Provident
@@ -95,31 +95,33 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { useJobs } from '@/services/firestore/useJobs'
 import { auth } from '@/config/firebase'
+import { reactive } from 'vue'
+import { getPostById, applications } from '@/services/firestore/jobService'
 
 const route = useRoute()
 const { id } = route.params
 const isLoading = ref(false)
 
-const { getPostById, applications, postState } = useJobs()
-
-function delay(milliseconds) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, milliseconds)
-  })
-}
-
 const applyJob = async () => {
   isLoading.value = true
-  //await delay(2000)
-
-     await applications(id, { userID: 'OykF86gdN0NQUZTmw85SkF0Yzak1' ,applicationDate: new Date() })
+  const user = auth.currentUser
+  if (user) {
+    await applications(id, { userID: user.uid, applicationDate: new Date() })
+  }
 
   isLoading.value = false
 }
+
+const state = reactive({
+  user: {},
+  post: {}
+})
+
 onMounted(async () => {
-  await getPostById(id)
+  const { userData, postData } = await getPostById(id)
+  state.post = postData
+  state.user = userData
 })
 </script>
 
