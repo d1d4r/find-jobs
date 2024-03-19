@@ -20,12 +20,7 @@
       <option value="Part Time">Part Time</option>
       <option value="Contract">Contract</option>
     </select>
-    <button
-      @click="getPosts"
-      class="self-center px-4 py-2 text-white bg-black border rounded-md hover:bg-gray-800 active:bg-slate-900"
-    >
-      SEARCH
-    </button>
+
     <button
       @click="cleanFilters"
       class="self-center px-4 py-2 text-white bg-black border rounded-md hover:bg-gray-800 active:bg-slate-900"
@@ -38,58 +33,22 @@
 <script setup>
 import { useFilterJobsStore } from '@/stores/useFilterJobsStore'
 import { onUpdated, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useJobs } from '@/services/firestore/useJobs'
-
-const props = defineProps({
-  getPosts: {
-    type: Function,
-    reqierd: true
-  }
-})
-
-// const route = useRoute()
-const router = useRouter()
-const { getPosts: getPost } = useJobs()
 
 let { setFilter } = useFilterJobsStore()
 const location = ref('All-Location')
 const experince = ref('Experience-Level')
 const employment = ref('Employment-Type')
 
-// const pushQuery = () => {
-//   router.push({
-//     name: 'jobs',
-//     query: {
-//       location: location.value,
-//       experienceLevel: experince.value,
-//       employmentType: employment.value
-//     }
-//   })
-// }
-
 const cleanFilters = () => {
-  router.push({
-    name: 'jobs',
-    query: {}
-  })
-
-  location.value = 'All-Location'
-  experince.value = 'Experience-Level'
-  employment.value = 'Employment-Type'
+  setFilter('location', 'All-Location')
+  setFilter('experienceLevel', 'Experience-Level')
+  setFilter('employmentType', 'Employment-Type')
 }
 
 onUpdated(() => {
-  router.push({
-    name: 'jobs',
-    query: {
-      location: location.value,
-      experienceLevel: experince.value,
-      employmentType: employment.value
-    }
-  })
-
-  // getPosts()
+  setFilter('location', location.value)
+  setFilter('experienceLevel', experince.value)
+  setFilter('employmentType', employment.value)
 })
 </script>
 
