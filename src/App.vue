@@ -1,19 +1,12 @@
 <script setup>
 import { RouterView } from 'vue-router'
-import { useAuthStore } from './stores/useAuthStore'
-import { onMounted } from 'vue'
-const state = useAuthStore()
+import NavBar from './components/NavBar.vue'
 
-onMounted(() => {
-  state.tryLogging()
-  //await state.monitor()
-  //console.log(state.isLoagged)
-})
 </script>
 
 <template>
+  <NavBar />
   <RouterView />
-  
 </template>
 
 <style scoped></style>
