@@ -89,6 +89,16 @@
         </p>
       </div>
     </div>
+    <div class="w-full h-1 my-4 bg-black rounded-full"></div>
+
+    <div>
+      <h2 class="mb-4 text-3xl font-bold">candidates list</h2>
+      <ul>
+        <li v-for="candidate in state.candidates" :key="candidate.id">
+          {{ candidate }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -97,7 +107,11 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { auth } from '@/config/firebase'
 import { reactive } from 'vue'
-import { getPostById, applications } from '@/services/firestore/jobService'
+import {
+  getPostById,
+  applications,
+  getApplicationsCandidates
+} from '@/services/firestore/jobService'
 
 const route = useRoute()
 const { id } = route.params
@@ -115,13 +129,16 @@ const applyJob = async () => {
 
 const state = reactive({
   user: {},
-  post: {}
+  post: {},
+  candidates: []
 })
 
 onMounted(async () => {
   const { userData, postData } = await getPostById(id)
+  const candidates = await getApplicationsCandidates(id)
   state.post = postData
   state.user = userData
+  state.candidates = candidates
 })
 </script>
 
