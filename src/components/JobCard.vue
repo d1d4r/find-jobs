@@ -1,5 +1,8 @@
 <template>
-  <div class="flex gap-2 p-3 border cursor-pointer hover:border-black" @click="toDetails(post.id)">
+  <div
+    class="flex mt-2 gap-2 p-3 border cursor-pointer hover:border-black"
+    @click="toDetails(post.id)"
+  >
     <div class="">
       <img
         class="object-cover m-auto size-14 rounded-xl"
