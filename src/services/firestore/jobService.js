@@ -13,6 +13,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '@/config/firebase'
 import { getUserById } from './userService'
+import { useFilterJobsStore } from '@/stores/useFilterJobsStore'
 
 export const countJobs = async () => {
   const postRef = collection(db, 'Jobs')
@@ -21,8 +22,9 @@ export const countJobs = async () => {
 }
 
 export const applyFilters = () => {
+  const { filters } = useFilterJobsStore()
   const queryConstraints = []
-  for (const [filterName, filterValue] of Object.entries()) {
+  for (const [filterName, filterValue] of Object.entries(filters)) {
     if (
       filterValue !== 'All-Location' &&
       filterValue !== 'Experience-Level' &&
@@ -31,6 +33,7 @@ export const applyFilters = () => {
       queryConstraints.push(where(filterName, '==', filterValue))
     }
   }
+
   return queryConstraints
 }
 
@@ -47,16 +50,7 @@ export const getPostsService = async (currentPage) => {
 
   const jobsCollection = collection(db, 'Jobs')
 
-  const queryConstraints = []
-  for (const [filterName, filterValue] of Object.entries({})) {
-    if (
-      filterValue !== 'All-Location' &&
-      filterValue !== 'Experience-Level' &&
-      filterValue !== 'Employment-Type'
-    ) {
-      queryConstraints.push(where(filterName, '==', filterValue))
-    }
-  }
+  const queryConstraints = applyFilters()
 
   const startAtDoc = await applyPagination(currentPage, currentPageSize)
 
@@ -132,10 +126,24 @@ export const getJobsByUserId = async (userID) => {
 //sub collections
 export const applications = async (jobId, data) => {
   try {
-    const applicationDoc = collection(db, `Jobs/${jobId}/Applications`)
-    const application = await addDoc(applicationDoc, data)
+    const applicationRef = collection(db, `Jobs/${jobId}/Applications`)
+    const application = await addDoc(applicationRef, data)
     return application
   } catch (error) {
     console.log('🚀 ~ applications ~ error:', error)
   }
+}
+
+export const getApplicationsCandidates = async (jobId) => {
+  const applicationRef = collection(db, `Jobs/${jobId}/Applications`)
+  const snapShot = await getDocs(applicationRef)
+  const candidates = []
+  snapShot.docs.map((doc) => {
+    candidates.push({
+      id: doc.id,
+      ...doc.data()
+    })
+  })
+  console.log('🚀 ~ getApplicationsCandidates ~ snapShot:', candidates)
+  return candidates
 }
