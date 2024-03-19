@@ -1,42 +1,81 @@
 import { defineStore } from 'pinia'
-import Auth from '@/services/Auth'
 import { computed, ref } from 'vue'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { app } from '@/config/firebase'
-
-const auth = getAuth()
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile
+} from 'firebase/auth'
+import { auth } from '@/config/firebase'
+import { useRouter } from 'vue-router'
+import { createUser as createUserCollection } from '@/services/firestore/userService'
 
 export const useAuthStore = defineStore('authStore', () => {
   const user = ref(false)
 
-  const isLoagged = computed(() => !!user.value)
+  const router = useRouter()
+  const isAuthenticated = computed(() => user.value)
+  const isLoading = ref(false)
+  const userId = ref(null)
 
   const setUser = (payload) => {
     user.value = payload
-    localStorage.setItem('isLoagged', JSON.stringify(payload))
   }
 
-  const tryLogging = () => {
-    if (localStorage.getItem('isLoagged')) {
-      user.value = true
-    } else {
-      user.value = false
+  const createUser = async (email, password, displayName) => {
+    try {
+      const credential = await createUserWithEmailAndPassword(auth, email, password)
+      const user = credential.user
+      await updateProfile(user, { displayName })
+      await createUserCollection({ displayName, bio: null }, credential.user.uid)
+      return user
+    } catch (error) {
+      console.log('🚀', error.message)
+      throw error
     }
   }
 
-  const monitor = () => {
-    const users = new Promise((resolve, reject) => {
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          resolve(setUser(user))
-        } else {
-          //reject()
-          setUser(false)
-        }
-      })
-    })
-    return users
+  const signIn = async (email, password) => {
+    try {
+      const credential = await signInWithEmailAndPassword(auth, email, password)
+      const user = credential.user
+      return user
+    } catch (error) {
+      console.log('🚀', error.message)
+      throw error
+    }
   }
 
-  return { user, isLoagged, monitor, tryLogging }
+  const logOut = async () => {
+    await signOut(auth)
+    router.push({
+      path: '/'
+    })
+  }
+
+  const monitor = () => {
+    onAuthStateChanged(auth, (user) => {
+      isLoading.value = true
+      if (user) {
+        setUser(true)
+      } else {
+        setUser(false)
+      }
+      isLoading.value = false
+    })
+  }
+  monitor()
+
+  const currentUserId = async () => {
+    const currentUserID = auth.currentUser
+    if (currentUserID) {
+      console.log('🚀 ~ currentUser ~  user.uid:', currentUserID.uid)
+      userId.value = currentUserID.uid
+      return currentUserID.uid
+    }
+  }
+
+  currentUserId()
+  return { user, isAuthenticated, logOut, signIn, createUser, monitor, currentUserId, userId }
 })
