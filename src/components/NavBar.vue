@@ -1,7 +1,8 @@
 <template>
   <nav class="relative border sm:flex">
     <div class="flex justify-between p-3">
-      <div class="flex items-center px-2 border">brand-log</div>
+      <RouterLink to="/" class="flex items-center text-2xl font-bold">find job</RouterLink>
+
       <button
         @click="toggleOpen"
         class="flex flex-col items-center gap-1 p-2 transition-all border active:bg-black group sm:hidden"
@@ -25,7 +26,7 @@
         <li>
           <RouterLink :to="{ name: 'profile' }">
             <div
-              class="relative w-10 h-10 overflow-hidden ring-4 bg-gray-100 rounded-full dark:bg-gray-600"
+              class="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full ring-2 ring-black dark:bg-gray-600"
             >
               <svg
                 class="absolute w-12 h-12 text-gray-400 -left-1"
@@ -45,6 +46,7 @@
         <div class="flex flex-col gap-5 sm:flex-row">
           <li><RouterLink :to="{ name: 'jobs', query: { page: '1' } }">jobs</RouterLink></li>
           <li><RouterLink :to="{ name: 'post-job' }" class="">post a job</RouterLink></li>
+          <li><RouterLink :to="{ name: 'candidates' }" class="">candidates</RouterLink></li>
         </div>
         <li>
           <button
