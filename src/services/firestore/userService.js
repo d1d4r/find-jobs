@@ -1,4 +1,4 @@
-import {  collection, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/config/firebase'
 import { updateProfile } from 'firebase/auth'
 import { auth } from '@/config/firebase'
@@ -11,6 +11,21 @@ export const createUser = async (data, id) => {
     console.log('🚀 ~ createUser ~ error:', error)
   }
 }
+
+export const getAllUsers = async () => {
+  const usersRef = collection(db, 'Users')
+  const snapShot = await getDocs(usersRef)
+  const users = []
+
+  snapShot.docs.map((doc) => {
+    users.push({
+      id: doc.id,
+      ...doc.data()
+    })
+  })
+  return users
+}
+
 export const getUserById = async (id) => {
   try {
     const user = await getDoc(doc(collection(db, 'Users'), id))
