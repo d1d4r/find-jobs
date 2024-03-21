@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex mt-2 gap-2 p-3 border cursor-pointer hover:border-black"
+    class="flex gap-2 p-3 mt-2 border cursor-pointer hover:border-black"
     @click="toDetails(post.id)"
   >
     <div class="">
@@ -33,6 +33,7 @@ defineProps({
 
 const router = useRouter()
 const toDetails = (id) => {
+  window.scroll(0, 0)
   router.push({ path: `jobs/${id}` })
 }
 </script>
