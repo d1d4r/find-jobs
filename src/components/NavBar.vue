@@ -19,12 +19,12 @@
       </button>
     </div>
     <div
-      class="absolute w-full p-5 bg-white border sm:static sm:w-1/2 sm:m-auto"
+      class="absolute w-full p-5 bg-white border-l border-r sm:static sm:w-1/2 sm:m-auto"
       :class="{ 'hidden sm:block': isOpen }"
     >
       <ul class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <li>
-          <RouterLink :to="{ name: 'profile' }">
+          <RouterLink @click="toggleOpen" :to="{ name: 'profile' }">
             <div
               class="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full ring-2 ring-black dark:bg-gray-600"
             >
@@ -44,9 +44,21 @@
           </RouterLink>
         </li>
         <div class="flex flex-col gap-5 sm:flex-row">
-          <li><RouterLink :to="{ name: 'jobs', query: { page: '1' } }">jobs</RouterLink></li>
-          <li><RouterLink :to="{ name: 'post-job' }" class="">post a job</RouterLink></li>
-          <li><RouterLink :to="{ name: 'candidates' }" class="">candidates</RouterLink></li>
+          <li>
+            <RouterLink @click="toggleOpen" :to="{ name: 'jobs', query: { page: '1' } }"
+              >jobs</RouterLink
+            >
+          </li>
+          <li>
+            <RouterLink @click="toggleOpen" :to="{ name: 'post-job' }" class=""
+              >post a job</RouterLink
+            >
+          </li>
+          <li>
+            <RouterLink @click="toggleOpen" :to="{ name: 'candidates' }" class=""
+              >candidates</RouterLink
+            >
+          </li>
         </div>
         <li>
           <button
@@ -62,7 +74,7 @@
           <button
             class="px-4 py-2 text-white bg-black border rounded-md hover:bg-gray-800 active:bg-slate-900"
           >
-            <RouterLink v-if="!state.isAuthenticated" to="/signup"> SIGN UP </RouterLink>
+            <RouterLink v-if="!state.isAuthenticated" to="/signin"> SIGN IN </RouterLink>
           </button>
         </li>
       </ul>
