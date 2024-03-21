@@ -1,5 +1,8 @@
 <template>
-  <div class="container min-h-screen px-4 py-8 mx-auto">
+  <div v-if="isLoading" class="flex items-center justify-center min-h-screen text-3xl font-bold">
+    loading...
+  </div>
+  <div v-else class="container min-h-screen px-4 py-8 mx-auto">
     <div>
       <h2 class="mb-4 text-3xl font-bold">posted by</h2>
       <CandidateCard :candidate="state.user" />
@@ -9,7 +12,7 @@
       <button
         :disabled="isLoading"
         @click="applyJob"
-        class="w-56 p-2 text-white bg-green-600 rounded-md disabled:bg-green-200 hover:bg-green-500 active:bg-green-800"
+        class="p-2 text-white bg-green-600 rounded-md lg:w-56 disabled:bg-green-200 hover:bg-green-500 active:bg-green-800"
       >
         <span v-if="!isLoading">APPLY JOB</span>
         <span v-else>LOADING...</span>
@@ -126,11 +129,13 @@ const state = reactive({
 })
 
 onMounted(async () => {
+  isLoading.value = true
   const { userData, postData } = await getPostById(id)
   const candidates = await getApplicationsCandidates(id)
   state.post = postData
   state.user = userData
   state.candidates = candidates
+  isLoading.value = false
 })
 </script>
 
