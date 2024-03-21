@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-wrap justify-center gap-2">
-    <input type="text" class="p-5 border rounded-md" placeholder="serach for job posting" />
+  <div class="flex flex-wrap justify-center gap-2 p-5">
+    <!-- <input type="text" class="p-5 border rounded-md" placeholder="serach for job posting" /> -->
     <select class="p-2 border rounded-md" v-model="location">
       <option selected value="All-Location">All-Location</option>
       <option value="Silemani">Silemani</option>
