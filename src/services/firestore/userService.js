@@ -1,4 +1,12 @@
-import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  getCountFromServer,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc
+} from 'firebase/firestore'
 import { db } from '@/config/firebase'
 import { updateProfile } from 'firebase/auth'
 import { auth } from '@/config/firebase'
@@ -10,6 +18,12 @@ export const createUser = async (data, id) => {
   } catch (error) {
     console.log('🚀 ~ createUser ~ error:', error)
   }
+}
+
+export const countCandidates = async () => {
+  const postRef = collection(db, 'Users')
+  const count = await getCountFromServer(postRef)
+  return count.data().count
 }
 
 export const getAllUsers = async () => {
@@ -30,7 +44,10 @@ export const getUserById = async (id) => {
   try {
     const user = await getDoc(doc(collection(db, 'Users'), id))
     if (user.exists()) {
-      return user.data()
+      return {
+        id: user.id,
+        ...user.data()
+      }
     } else {
       return null
     }
