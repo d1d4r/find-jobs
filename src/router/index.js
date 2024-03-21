@@ -1,31 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import PathNotFound from '@/components/PathNotFound.vue'
+import { auth } from '@/config/firebase'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    { path: '/:pathMatch(.*)*', component: PathNotFound },
+
     {
       path: '/',
       component: HomeView,
-      children: [
-        {
-          path: 'jobs',
-          name: 'jobs',
-          component: () => import('../views/JobsView.vue'),
-          props: true
-
-          //children: []
-        },
-        {
-          path: 'jobs/:id',
-          name: 'id',
-          component: () => import('../views/PostDetailsView.vue')
-        },
-        {
-          path: 'post-job',
-          name: 'post-job',
-          component: () => import('../views/PostJobView.vue')
-        }
-      ]
+      children: []
     },
     {
       path: '/signup',
@@ -43,14 +28,46 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: () => import('../views/UserProfileView.vue')
+      component: () => import('../views/UserProfileView.vue'),
+      meta: { auth: true }
     },
     {
       path: '/candidates',
       name: 'candidates',
       component: () => import('../views/CandidatesView.vue')
+    },
+    {
+      path: '/jobs',
+      name: 'jobs',
+      component: () => import('../views/JobsView.vue'),
+      props: true
+    },
+    {
+      path: '/jobs/:id',
+      name: 'id',
+      component: () => import('../views/PostDetailsView.vue')
+    },
+    {
+      path: '/post-job',
+      name: 'post-job',
+      component: () => import('../views/PostJobView.vue'),
+      meta: { auth: true }
     }
   ]
 })
 
+router.beforeEach(async (to, from, next) => {
+  if (to.meta.auth) {
+    const user = auth.currentUser
+    if (user) {
+      next()
+    } else {
+
+      next('/signin')
+    }
+  } else {
+    
+    next()
+  }
+})
 export default router
