@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="flex gap-2 p-3 mt-2 border cursor-pointer hover:border-black"
-    @click="toDetails(candidate.id)"
-  >
+  <div class="flex gap-2 p-3 mt-2 border cursor-pointer hover:border-black">
     <div class="">
       <img
         class="object-cover m-auto size-14 rounded-xl"
@@ -22,7 +19,6 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
 defineProps({
   candidate: {
     type: Object,
@@ -30,10 +26,10 @@ defineProps({
   }
 })
 
-const router = useRouter()
-const toDetails = (id) => {
-  router.push({ path: `/candidates/${id}` })
-}
+// const router = useRouter()
+// const toDetails = (id) => {
+//   router.push({ path: `/candidates/${id}` })
+// }
 </script>
 
 <style lang="scss" scoped></style>
