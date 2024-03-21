@@ -2,7 +2,7 @@
   <div class="container min-h-screen px-4 py-8 mx-auto">
     <div>
       <h2 class="mb-4 text-3xl font-bold">posted by</h2>
-      <p class="p-2 underline border">{{ state.user.displayName }}</p>
+      <CandidateCard :candidate="state.user" />
     </div>
     <div class="flex justify-between w-full my-5 sm:w-1/2">
       <h2 class="mb-4 text-3xl font-bold">Job Details</h2>
@@ -15,7 +15,6 @@
         <span v-else>LOADING...</span>
       </button>
     </div>
-
     <div class="flex flex-wrap gap-4 mb-4">
       <div class="">
         <span class="text-lg font-medium">Job Title: </span>
@@ -77,15 +76,7 @@
       <div class="space-y-2">
         <h2 class="text-xl font-medium">Job Description</h2>
         <p class="p-2 text-white bg-black rounded-md w-fit">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat ducimus laborum inventore
-          quas eos esse aliquam, officia fugiat quaerat veritatis minima sunt? Vel nihil nesciunt
-          consequuntur maiores fuga quos ea, tenetur doloribus perspiciatis nulla? Provident
-          aspernatur reiciendis enim rem veniam itaque quisquam animi ullam, hic eveniet nesciunt!
-          Deleniti cupiditate repellendus, odio repudiandae in officiis nostrum eaque quia id cum
-          debitis laboriosam, quis, rem dolor! Quisquam, illo! Laboriosam aliquid accusamus nihil
-          earum, illum totam! Nihil natus quasi fugiat quas suscipit, molestias in accusantium
-          corporis quam dolorem totam minus libero alias iste temporibus doloremque ipsum excepturi?
-          Quos delectus mollitia reiciendis incidunt pariatur.
+          {{ state.post.description }}
         </p>
       </div>
     </div>
@@ -95,7 +86,7 @@
       <h2 class="mb-4 text-3xl font-bold">candidates list</h2>
       <ul>
         <li v-for="candidate in state.candidates" :key="candidate.id">
-          {{ candidate }}
+          <CandidateCard :candidate="state.user" />
         </li>
       </ul>
     </div>
@@ -112,6 +103,7 @@ import {
   applications,
   getApplicationsCandidates
 } from '@/services/firestore/jobService'
+import CandidateCard from '@/components/CandidateCard.vue'
 
 const route = useRoute()
 const { id } = route.params
