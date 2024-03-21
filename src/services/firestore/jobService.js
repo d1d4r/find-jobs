@@ -67,7 +67,6 @@ export const getPostsService = async (currentPage) => {
 export const getPostById = async (id) => {
   const post = await getDoc(doc(collection(db, 'Jobs'), id))
   if (post.exists()) {
-    //postState.post = post.data()
     const postData = post.data()
     const userData = await getUserById(post.data().userID)
     return { userData, postData }
@@ -144,6 +143,5 @@ export const getApplicationsCandidates = async (jobId) => {
       ...doc.data()
     })
   })
-  console.log('🚀 ~ getApplicationsCandidates ~ snapShot:', candidates)
   return candidates
 }
