@@ -19,7 +19,7 @@
       </button>
     </div>
     <div
-      class="absolute w-full p-5 bg-white border-l border-r xl:static xl:w-1/2 xl:m-auto"
+      class="absolute z-50 w-full p-5 bg-white border-l border-r xl:static xl:w-1/2 xl:m-auto"
       :class="{ 'hidden xl:block': isOpen }"
     >
       <ul class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
