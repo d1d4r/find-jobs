@@ -1,11 +1,11 @@
 <template>
-  <nav class="relative border sm:flex">
+  <nav class="relative border xl:flex">
     <div class="flex justify-between p-3">
       <RouterLink to="/" class="flex items-center text-2xl font-bold">find job</RouterLink>
 
       <button
         @click="toggleOpen"
-        class="flex flex-col items-center gap-1 p-2 transition-all border active:bg-black group sm:hidden"
+        class="flex flex-col items-center gap-1 p-2 transition-all border active:bg-black group xl:hidden"
       >
         <div
           class="w-8 h-[0.3rem] bg-black rounded-full group-active:bg-white transition-all"
@@ -19,10 +19,10 @@
       </button>
     </div>
     <div
-      class="absolute w-full p-5 bg-white border-l border-r sm:static sm:w-1/2 sm:m-auto"
-      :class="{ 'hidden sm:block': isOpen }"
+      class="absolute w-full p-5 bg-white border-l border-r xl:static xl:w-1/2 xl:m-auto"
+      :class="{ 'hidden xl:block': isOpen }"
     >
-      <ul class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <ul class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <li>
           <RouterLink @click="toggleOpen" :to="{ name: 'profile' }">
             <div

@@ -1,13 +1,13 @@
 <template>
   <div class="flex items-center justify-center min-h-screen border">
     <form @submit.prevent="submitForm">
-      <div class="border flex flex-col size-[30rem] p-4 rounded-md gap-4">
+      <div class="flex flex-col gap-4 p-4  border rounded-md md:size-[30rem]">
         <label for="name" class="flex flex-col gap-2">
           <span>name:</span>
           <input
             id="name"
             type="text"
-            class="p-1 border rounded-md"
+            class="p-1 border rounded-md "
             placeholder="enter name"
             v-model="formData.name"
             required
@@ -20,7 +20,7 @@
           <input
             id="email"
             type="email"
-            class="p-1 border rounded-md"
+            class="p-1 border rounded-md "
             placeholder="email@example.com"
             v-model="formData.email"
             required
@@ -32,7 +32,7 @@
           <input
             id="password"
             type="password"
-            class="p-1 border rounded-md"
+            class="p-1 border rounded-md "
             placeholder="**********"
             v-model="formData.password"
             required

@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center justify-center min-h-screen border">
     <form @submit.prevent="submitForm">
-      <div class="border flex flex-col size-[30rem] p-4 rounded-md gap-4">
+      <div class="border flex flex-col md:size-[30rem] p-4 rounded-md gap-4">
         <label for="email" class="flex flex-col gap-2">
           <span>email:</span>
           <input
