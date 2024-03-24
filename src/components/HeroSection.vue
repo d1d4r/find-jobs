@@ -2,7 +2,7 @@
   <div class="">
     <div class="grid grid-cols-1 grid-rows-1">
       <div class="col-start-1 col-end-1 row-start-1 row-end-1 grayscale">
-        <img src="../assets/images/explore.jpeg" />
+        <img src="../assets/images/explore.jpeg" loading="lazy"/>
       </div>
       <div
         class="z-10 col-start-1 col-end-1 row-start-1 row-end-1 m-auto border border-black rounded-md"
