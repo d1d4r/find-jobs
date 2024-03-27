@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import PathNotFound from '@/components/PathNotFound.vue'
+import CandidatesView from '../views/CandidatesView.vue'
 import { auth } from '@/config/firebase'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  linkActiveClass : "active",
   routes: [
     { path: '/:pathMatch(.*)*', component: PathNotFound },
 
@@ -34,7 +36,7 @@ const router = createRouter({
     {
       path: '/candidates',
       name: 'candidates',
-      component: () => import('../views/CandidatesView.vue')
+      component: CandidatesView
     },
     {
       path: '/jobs',
@@ -62,7 +64,6 @@ router.beforeEach(async (to, from, next) => {
     if (user) {
       next()
     } else {
-
       next('/signin')
     }
   } else {
