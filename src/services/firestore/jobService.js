@@ -42,8 +42,8 @@ export const applyPagination = async (currentPage, currentPageSize) => {
     currentPage === 1 ? null : await getNthDocBasedOnField(currentPage * currentPageSize - 1)
   return startAtDoc
 }
-export const getPostsService = async (currentPage) => {
-  const currentPageSize = 5
+export const getPostsService = async (currentPage ) => {
+  const currentPageSize = 2
   if (currentPage < 1 || currentPageSize < 1 || isNaN(currentPage)) {
     throw new Error('Invalid currentPage or currentPageSize. Both must be positive integers.')
   }
