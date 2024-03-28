@@ -128,7 +128,7 @@ const state = reactive({
   candidates: []
 })
 
-onMounted(async () => {
+const getJobDetails = async () => {
   isLoading.value = true
   const { userData, postData } = await getPostById(id)
   const candidates = await getApplicationsCandidates(id)
@@ -136,6 +136,18 @@ onMounted(async () => {
   state.user = userData
   state.candidates = candidates
   isLoading.value = false
+}
+
+getJobDetails()
+
+onMounted(() => {
+  // isLoading.value = true
+  // const { userData, postData } = await getPostById(id)
+  // const candidates = await getApplicationsCandidates(id)
+  // state.post = postData
+  // state.user = userData
+  // state.candidates = candidates
+  // isLoading.value = false
 })
 </script>
 
