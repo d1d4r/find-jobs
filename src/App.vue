@@ -7,7 +7,7 @@ import FooterSrction from '@/components/FooterSection.vue'
 <template>
   <NavBar />
   <RouterView />
-  <FooterSrction />
+  <!-- <FooterSrction /> -->
 </template>
 
 <style scoped></style>
